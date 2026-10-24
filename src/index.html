@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Eclipse Launcher</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="titlebar">
+    <div class="drag"></div>
+    <button data-window="min">—</button><button data-window="max">□</button><button class="close" data-window="close">×</button>
+  </div>
+
+  <aside class="sidebar">
+    <img class="logo" src="../assets/EclipseLogo+Name397x165.png" alt="Eclipse">
+    <button class="account-card" id="accountCard">
+      <span id="avatar" class="skin-head sidebar-skin-head"><span class="skin-initial">S</span><img class="skin-head-base" alt=""><img class="skin-head-hat" alt=""></span>
+      <span><b id="accountName">Steve</b><small id="accountState"><i class="status-dot status-online" aria-hidden="true"></i>Online</small></span>
+      <span>›</span>
+    </button>
+
+    <nav>
+      <button class="nav active" data-page="home">⌂ <span>Home</span></button>
+      <button class="nav" data-page="mods">✣ <span>Mods</span></button>
+      <button class="nav" data-page="profile">♙ <span>Profile</span></button>
+      <button class="nav" data-page="settings">⚙ <span>Settings</span></button>
+    </nav>
+
+    <button class="status-pop" id="statusPop">
+      <b>Account status</b>
+      <span data-status="online"><i class="status-dot status-online" aria-hidden="true"></i>Online</span>
+      <span data-status="offline"><i class="status-dot status-offline" aria-hidden="true"></i>Offline</span>
+      <span data-status="dnd"><i class="status-dot status-dnd" aria-hidden="true"></i>Do Not Disturb</span>
+    </button>
+
+    <div class="version">Eclipse v0.5.0</div>
+  </aside>
+
+  <main>
+    <section id="home" class="page active-page">
+      <header class="hero">
+        <div>
+          <p>Welcome back,</p>
+          <h1 id="heroName">Steve</h1>
+          <span>Play. Explore. Build. Your world, your way.</span>
+        </div>
+        <section class="selected-instance-bar" aria-label="Selected Minecraft instance">
+          <div class="selected-instance-actions">
+            <button id="selectedInstancePlay" class="play selected-instance-play" type="button" hidden>▶ PLAY</button>
+          </div>
+        </section>
+      </header>
+
+      <div class="home-grid">
+        <div class="content">
+          <div class="section-head"><h2>▦ Instances</h2><div class="tools">
+            <input id="search" placeholder="Search instances...">
+            <div class="custom-select sort-select" data-select="sort">
+              <button id="sortDropdownTrigger" class="custom-select-trigger" type="button" role="combobox" aria-label="Sort instances" aria-controls="sortDropdownMenu" aria-expanded="false"><span class="custom-select-value">Sort by: Last Played</span><svg class="custom-select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"/></svg></button>
+              <div id="sortDropdownMenu" class="custom-select-menu" role="listbox" aria-label="Sort instances"><button class="custom-select-option selected" type="button" role="option" data-value="last" aria-selected="true" tabindex="-1">Sort by: Last Played</button><button class="custom-select-option" type="button" role="option" data-value="name" aria-selected="false" tabindex="-1">Sort by: Name</button><button class="custom-select-option" type="button" role="option" data-value="version" aria-selected="false" tabindex="-1">Sort by: Version</button></div>
+              <select id="sort" hidden aria-hidden="true" tabindex="-1"><option value="last">Sort by: Last Played</option><option value="name">Sort by: Name</option><option value="version">Sort by: Version</option></select>
+            </div>
+          </div></div>
+          <div id="instances" class="instances"></div>
+          <div id="newsSection" class="news"><div class="section-head"><h2>▣ Latest News</h2></div><div id="newsList"></div></div>
+        </div>
+
+        <aside class="rightbar">
+          <div class="panel friends"><h3>♧ &nbsp; Friends</h3><div id="friendsList" class="friends-list"><div class="empty">No Friends</div></div></div>
+          <div class="panel quick"><h3>ϟ &nbsp; Quick Launch</h3><div id="quickLaunch" class="quick-item"></div></div>
+          <div class="panel background-panel"><h3>▧ &nbsp; Custom Background</h3><div id="backgroundPreview" class="bg-preview"></div><button id="changeBg">Change Background</button><hr><h3>☾ &nbsp; Theme</h3><select id="theme"><option value="dark">Dark</option><option value="light">Light</option></select></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="mods" class="page">
+      <div class="simple-page"><h1>Mods</h1><p>Select an instance to manage its mods.</p><div class="mod-layout"><select id="modInstance"></select><div class="mod-box"><h2>Installed Mods</h2><div id="modList">Mod management will be connected next.</div></div><div class="mod-box"><h2>Modrinth</h2><input placeholder="Search Modrinth..." id="modSearch"><button id="modSearchBtn">Search</button><div id="modResults"></div></div></div></div>
+    </section>
+
+    <section id="profile" class="page">
+      <div class="simple-page profile-page">
+        <div class="profile-page-heading"><div><h1>Profiles & Accounts</h1><p>Choose who Eclipse will use when you launch Minecraft.</p></div><button class="add-profile-button" id="addProfileBtn">＋ Add profile</button></div>
+        <div id="profileList" class="profile-list"></div>
+        <section id="profileCreator" class="profile-creator" hidden>
+          <div class="profile-creator-heading"><div><h2>Add an account</h2><p>Offline profiles work locally. Microsoft accounts connect to your owned Minecraft: Java Edition profile.</p></div><button id="cancelAddProfile" class="quiet-button">Close</button></div>
+          <div class="account-type-picker">
+            <button class="account-type active" data-account-type="offline"><span class="account-type-icon">◉</span><span><b>Offline</b><small>Choose a local player name</small></span></button>
+            <button class="account-type" data-account-type="microsoft"><span class="account-type-icon">▦</span><span><b>Microsoft</b><small>Sign in through your browser</small></span></button>
+          </div>
+          <div id="offlineAccountForm" class="account-form">
+            <label for="offlineProfileName">Player name</label>
+            <input id="offlineProfileName" maxlength="16" autocomplete="off" placeholder="e.g. Steve">
+            <small>1–16 letters, numbers, or underscores.</small>
+            <button id="createOfflineProfile" class="primary-button">Create offline profile</button>
+          </div>
+          <div id="microsoftAccountForm" class="account-form" hidden>
+            <label for="microsoftClientId">Microsoft app Client ID</label>
+            <input id="microsoftClientId" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+            <small>This public ID belongs to Eclipse’s app registration. It is not your Microsoft password or a secret.</small>
+            <button id="loginMicrosoft" class="primary-button">Continue with Microsoft</button>
+          </div>
+          <p id="accountSetupMessage" class="account-setup-message" role="status" aria-live="polite"></p>
+          <p class="client-id-help">Need an app ID? In <a href="https://entra.microsoft.com/" id="openEntraPortal">Microsoft Entra</a>, register an app for personal Microsoft accounts, then add the <b>Mobile and desktop applications</b> platform with <code>http://localhost</code> as its redirect URI. No client secret is needed.</p>
+        </section>
+        <div id="selectedProfileDetails" class="selected-profile-details"></div>
+      </div>
+    </section>
+
+    <section id="settings" class="page"><div class="simple-page"><h1>Settings</h1><p>Customize how Eclipse looks and feels.</p>
+      <section class="settings-card"><div class="settings-card-copy"><h2>Animations</h2><p>Choose how quickly pages and interface elements move.</p></div>
+        <label for="animationSpeedTrigger">Animation speed</label>
+        <div class="custom-select animation-select" data-select="animationSpeed">
+          <button id="animationSpeedTrigger" class="custom-select-trigger" type="button" role="combobox" aria-label="Animation speed" aria-controls="animationSpeedMenu" aria-expanded="false"><span class="custom-select-value">Normal</span><svg class="custom-select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"/></svg></button>
+          <div id="animationSpeedMenu" class="custom-select-menu" role="listbox" aria-label="Animation speed"><button class="custom-select-option" type="button" role="option" data-value="fast" aria-selected="false" tabindex="-1">Fast</button><button class="custom-select-option selected" type="button" role="option" data-value="normal" aria-selected="true" tabindex="-1">Normal</button><button class="custom-select-option" type="button" role="option" data-value="relaxed" aria-selected="false" tabindex="-1">Relaxed</button><button class="custom-select-option" type="button" role="option" data-value="slow" aria-selected="false" tabindex="-1">Slow</button><button class="custom-select-option" type="button" role="option" data-value="off" aria-selected="false" tabindex="-1">Off</button></div>
+          <select id="animationSpeed" hidden aria-hidden="true" tabindex="-1"><option value="fast">Fast</option><option value="normal">Normal</option><option value="relaxed">Relaxed</option><option value="slow">Slow</option><option value="off">Off</option></select>
+        </div>
+        <label for="playAnimationSpeedTrigger">Play button fade speed</label>
+        <div class="custom-select animation-select" data-select="playAnimationSpeed">
+          <button id="playAnimationSpeedTrigger" class="custom-select-trigger" type="button" role="combobox" aria-label="Play button fade speed" aria-controls="playAnimationSpeedMenu" aria-expanded="false"><span class="custom-select-value">Relaxed</span><svg class="custom-select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"/></svg></button>
+          <div id="playAnimationSpeedMenu" class="custom-select-menu" role="listbox" aria-label="Play button fade speed"><button class="custom-select-option" type="button" role="option" data-value="fast" aria-selected="false" tabindex="-1">Fast</button><button class="custom-select-option" type="button" role="option" data-value="normal" aria-selected="false" tabindex="-1">Normal</button><button class="custom-select-option selected" type="button" role="option" data-value="relaxed" aria-selected="true" tabindex="-1">Relaxed</button><button class="custom-select-option" type="button" role="option" data-value="slow" aria-selected="false" tabindex="-1">Slow</button><button class="custom-select-option" type="button" role="option" data-value="off" aria-selected="false" tabindex="-1">Off</button></div>
+          <select id="playAnimationSpeed" hidden aria-hidden="true" tabindex="-1"><option value="fast">Fast</option><option value="normal">Normal</option><option value="relaxed">Relaxed</option><option value="slow">Slow</option><option value="off">Off</option></select>
+        </div>
+        <small>Changes apply immediately and are saved on this device.</small>
+      </section>
+      <section class="settings-card"><div class="settings-card-copy"><h2>Minecraft News</h2><p>Choose whether the latest official Minecraft news appears on Home.</p></div>
+        <label class="settings-toggle" for="newsEnabledToggle"><span>Show Minecraft News</span><input id="newsEnabledToggle" type="checkbox" checked></label>
+        <small>Your choice is saved on this device.</small>
+      </section>
+      <section class="settings-card sidebar-order-card"><div class="settings-card-copy"><h2>Sidebar order</h2><p>Move sections up or down to arrange the navigation.</p></div>
+        <div id="sidebarOrderList" class="sidebar-order-list"></div>
+        <small>Changes apply immediately and are saved on this device.</small>
+      </section>
+    </div></section>
+  </main>
+  <div id="removeProfileDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="removeProfileTitle" aria-describedby="removeProfileDescription">
+      <div class="confirm-icon">!</div>
+      <div class="confirm-copy">
+        <h2 id="removeProfileTitle">Remove this profile?</h2>
+        <p id="removeProfileDescription">The profile <b id="removeProfileName"></b> will be removed from Eclipse.</p>
+      </div>
+      <p id="removeProfileError" class="confirm-error" hidden></p>
+      <div class="confirm-actions">
+        <button id="removeProfileCancel" class="confirm-cancel">No, keep it</button>
+        <button id="removeProfileConfirm" class="confirm-remove">Yes, remove</button>
+      </div>
+    </section>
+  </div>
+  <div id="renameInstanceDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog rename-dialog" role="dialog" aria-modal="true" aria-labelledby="renameInstanceTitle" aria-describedby="renameInstanceDescription">
+      <div class="rename-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 16.5-.8 4.3 4.3-.8L19.7 7.8a2.1 2.1 0 0 0-3-3L4 16.5Z"/><path d="m14.9 6.6 3 3"/></svg></div>
+      <div class="confirm-copy">
+        <h2 id="renameInstanceTitle">Rename instance</h2>
+        <p id="renameInstanceDescription">Choose a new name for this Minecraft instance.</p>
+      </div>
+      <label class="rename-instance-label" for="renameInstanceInput">Instance name</label>
+      <input id="renameInstanceInput" class="rename-instance-input" maxlength="32" autocomplete="off" spellcheck="false">
+      <p id="renameInstanceError" class="confirm-error" hidden></p>
+      <div class="confirm-actions">
+        <button id="renameInstanceCancel" class="confirm-cancel" type="button">Cancel</button>
+        <button id="renameInstanceSave" class="confirm-remove" type="button">Save name</button>
+      </div>
+    </section>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

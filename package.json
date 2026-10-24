@@ -1,0 +1,31 @@
+{
+  "name": "eclipse-launcher",
+  "version": "0.5.0",
+  "description": "Eclipse Minecraft Launcher",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "minecraft-launcher-core": "^3.18.2"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.eclipse.launcher",
+    "productName": "Eclipse Launcher",
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "instances/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "Eclipse-Launcher-Setup-${version}.${ext}"
+    }
+  }
+}

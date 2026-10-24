@@ -1,0 +1,13 @@
+instances/
+node_modules/
+dist/
+out/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# Keep the local Minecraft instance out of normal Git commits
+instances/*
+!instances/README.txt
