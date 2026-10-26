@@ -34,7 +34,7 @@
       <span data-status="dnd"><i class="status-dot status-dnd" aria-hidden="true"></i>Do Not Disturb</span>
     </button>
 
-    <div class="version">Eclipse v0.5.0</div>
+    <div class="version">Eclipse v0.9.0</div>
   </aside>
 
   <main>
@@ -46,11 +46,19 @@
           <span>Play. Explore. Build. Your world, your way.</span>
         </div>
         <section class="selected-instance-bar" aria-label="Selected Minecraft instance">
+          <div id="selectedInstancePlaytime" class="selected-instance-playtime" hidden aria-label="Instance playtime">
+            <span>PLAYTIME</span><strong id="selectedInstancePlaytimeValue">00h00</strong>
+          </div>
           <div class="selected-instance-actions">
             <button id="selectedInstancePlay" class="play selected-instance-play" type="button" hidden>▶ PLAY</button>
           </div>
         </section>
       </header>
+
+      <section id="instanceInstallProgress" class="instance-install-progress" role="status" aria-live="polite" hidden>
+        <div class="instance-install-progress-heading"><strong id="instanceInstallProgressTitle">Installing instance</strong><span id="instanceInstallProgressStatus">Starting…</span></div>
+        <div class="instance-install-track"><span id="instanceInstallProgressFill"></span></div>
+      </section>
 
       <div class="home-grid">
         <div class="content">
@@ -67,15 +75,34 @@
         </div>
 
         <aside class="rightbar">
-          <div class="panel friends"><h3>♧ &nbsp; Friends</h3><div id="friendsList" class="friends-list"><div class="empty">No Friends</div></div></div>
-          <div class="panel quick"><h3>ϟ &nbsp; Quick Launch</h3><div id="quickLaunch" class="quick-item"></div></div>
+          <div id="friendsBox" class="panel friends"><h3>♧ &nbsp; Friends</h3><div id="friendsList" class="friends-list"><div class="empty">No Friends</div></div></div>
+          <div id="quickLaunchPanel" class="panel quick"><h3>ϟ &nbsp; Quick Launch</h3><div id="quickLaunch" class="quick-item"></div></div>
           <div class="panel background-panel"><h3>▧ &nbsp; Custom Background</h3><div id="backgroundPreview" class="bg-preview"></div><button id="changeBg">Change Background</button><hr><h3>☾ &nbsp; Theme</h3><select id="theme"><option value="dark">Dark</option><option value="light">Light</option></select></div>
         </aside>
       </div>
     </section>
 
     <section id="mods" class="page">
-      <div class="simple-page"><h1>Mods</h1><p>Select an instance to manage its mods.</p><div class="mod-layout"><select id="modInstance"></select><div class="mod-box"><h2>Installed Mods</h2><div id="modList">Mod management will be connected next.</div></div><div class="mod-box"><h2>Modrinth</h2><input placeholder="Search Modrinth..." id="modSearch"><button id="modSearchBtn">Search</button><div id="modResults"></div></div></div></div>
+      <div class="simple-page mods-page">
+        <header class="mods-page-heading"><div><h1>Mods</h1><p>Manage your Fabric mods or find new ones on Modrinth.</p></div><div class="mod-instance-picker"><span>Selected instance</span><div class="custom-select mod-instance-select" data-select="modInstance"><button id="modInstanceDropdownTrigger" class="custom-select-trigger" type="button" role="combobox" aria-label="Selected instance" aria-controls="modInstanceDropdownMenu" aria-expanded="false"><span class="custom-select-value">Choose an instance</span><svg class="custom-select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"/></svg></button><div id="modInstanceDropdownMenu" class="custom-select-menu" role="listbox" aria-label="Minecraft instances"></div><select id="modInstance" class="custom-select-native" tabindex="-1" aria-hidden="true" hidden></select></div></div></header>
+        <div id="modInstanceStatus" class="mod-instance-status" role="status"></div>
+        <div class="mod-tabs" role="tablist" aria-label="Mod sections">
+          <button id="installedModsTab" class="mod-tab active" type="button" role="tab" aria-selected="true" aria-controls="installedModsView">Installed <span id="installedModCount">0</span></button>
+          <button id="modrinthTab" class="mod-tab" type="button" role="tab" aria-selected="false" aria-controls="modrinthView">Modrinth <span>↗</span></button>
+        </div>
+        <section id="installedModsView" class="mod-section" role="tabpanel" aria-labelledby="installedModsTab">
+          <div class="mod-section-heading"><div><h2>Installed mods</h2><p>Enable, disable, or remove mods. Pack-included mods are tagged Built-in.</p></div><div class="mod-heading-actions"><button id="openModsFolder" class="mod-refresh-button mod-folder-button" type="button" aria-label="Open selected instance mods folder" title="Open mods folder"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.25 5.5a1.25 1.25 0 0 1 1.25-1.25h3l1.5 1.5h6.75A1.25 1.25 0 0 1 16 7v6.25a1.25 1.25 0 0 1-1.25 1.25h-11a1.5 1.5 0 0 1-1.5-1.5V5.5Z"/><path d="M2.5 7h13"/></svg></button><button id="refreshMods" class="mod-refresh-button" type="button">↻ Refresh</button></div></div>
+          <div class="installed-mod-tools"><label class="installed-mod-search" for="installedModSearch"><span aria-hidden="true">⌕</span><input id="installedModSearch" type="search" autocomplete="off" placeholder="Search installed mods..."></label><div id="installedModFilters" class="installed-mod-filters" role="group" aria-label="Filter installed mods"><button type="button" class="active" data-mod-filter="all" aria-pressed="true">All</button><button type="button" data-mod-filter="enabled" aria-pressed="false">Enabled</button><button type="button" data-mod-filter="disabled" aria-pressed="false">Disabled</button></div></div>
+          <div id="modList" class="mod-card-list"><div class="mod-empty-card">Choose an instance to see its mods.</div></div>
+        </section>
+        <section id="modrinthView" class="mod-section" role="tabpanel" aria-labelledby="modrinthTab" hidden>
+          <div class="mod-section-heading"><div><h2>Find mods on Modrinth</h2><p>Results match this instance’s Minecraft version and Fabric loader. Required dependencies install automatically.</p></div></div>
+          <form id="modSearchForm" class="mod-search-form"><label class="mod-search-input-wrap" for="modSearch"><span aria-hidden="true">⌕</span><input id="modSearch" type="search" maxlength="100" autocomplete="off" placeholder="Search mods..."></label><button id="modSearchBtn" class="primary-button" type="submit">Search mods</button></form>
+          <div id="modSearchMessage" class="mod-search-message" role="status" aria-live="polite">Search Modrinth for mods compatible with the selected instance.</div>
+          <div id="modInstallProgress" class="mod-install-progress" hidden><div class="mod-install-progress-heading"><span id="modInstallProgressLabel">Preparing mod installation…</span><span id="modInstallProgressPercent"></span></div><div class="mod-install-progress-track"><span id="modInstallProgressFill"></span></div></div>
+          <div id="modResults" class="mod-card-list mod-search-results"></div>
+        </section>
+      </div>
     </section>
 
     <section id="profile" class="page">
@@ -123,8 +150,28 @@
         </div>
         <small>Changes apply immediately and are saved on this device.</small>
       </section>
+      <section class="settings-card playtime-settings-card"><div class="settings-card-copy"><h2>Playtime</h2><p>Track time played for each instance and see how your time is split.</p></div>
+        <label class="settings-toggle playtime-visibility-toggle" for="showPlaytimeToggle"><span>Show playtime on Home</span><input id="showPlaytimeToggle" type="checkbox" checked></label>
+        <label for="playtimePositionTrigger">Playtime position</label>
+        <div class="custom-select animation-select" data-select="playtimePosition">
+          <button id="playtimePositionTrigger" class="custom-select-trigger" type="button" role="combobox" aria-label="Playtime position" aria-controls="playtimePositionMenu" aria-expanded="false"><span class="custom-select-value">Left of Play button</span><svg class="custom-select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4"/></svg></button>
+          <div id="playtimePositionMenu" class="custom-select-menu" role="listbox" aria-label="Playtime position"><button class="custom-select-option selected" type="button" role="option" data-value="left" aria-selected="true" tabindex="-1">Left of Play button</button><button class="custom-select-option" type="button" role="option" data-value="right" aria-selected="false" tabindex="-1">Right of Play button</button></div>
+          <select id="playtimePosition" hidden aria-hidden="true" tabindex="-1"><option value="left">Left of Play button</option><option value="right">Right of Play button</option></select>
+        </div>
+        <div class="playtime-total"><span>Total playtime</span><strong id="playtimeTotal">00h00</strong></div>
+        <div id="playtimeStats" class="playtime-stats" aria-live="polite"></div>
+        <small>Playtime is saved separately for each instance on this device. Resetting is blocked while that instance is running.</small>
+      </section>
       <section class="settings-card"><div class="settings-card-copy"><h2>Minecraft News</h2><p>Choose whether the latest official Minecraft news appears on Home.</p></div>
         <label class="settings-toggle" for="newsEnabledToggle"><span>Show Minecraft News</span><input id="newsEnabledToggle" type="checkbox" checked></label>
+        <small>Your choice is saved on this device.</small>
+      </section>
+      <section class="settings-card"><div class="settings-card-copy"><h2>Friends tab</h2><p>Haha, no friends? Send an invite to <span class="friends-joke-name">Arman_Legend</span>. The invite system is coming later!</p></div>
+        <label class="settings-toggle" for="showFriendsBoxToggle"><span>Show Friends Tab in Home</span><input id="showFriendsBoxToggle" type="checkbox" checked></label>
+        <small>Your choice is saved on this device.</small>
+      </section>
+      <section class="settings-card"><div class="settings-card-copy"><h2>Quick Launch</h2><p>Keep your pinned instances available on the Home screen.</p></div>
+        <label class="settings-toggle" for="showQuickLaunchToggle"><span>Show Quick Launch Tab in Home</span><input id="showQuickLaunchToggle" type="checkbox" checked></label>
         <small>Your choice is saved on this device.</small>
       </section>
       <section class="settings-card sidebar-order-card"><div class="settings-card-copy"><h2>Sidebar order</h2><p>Move sections up or down to arrange the navigation.</p></div>
@@ -133,6 +180,22 @@
       </section>
     </div></section>
   </main>
+
+  <div id="appNotice" class="app-notice" role="status" aria-live="polite" hidden></div>
+  <div id="resetPlaytimeDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog delete-instance-dialog" role="alertdialog" aria-modal="true" aria-labelledby="resetPlaytimeTitle" aria-describedby="resetPlaytimeDescription">
+      <div class="confirm-icon">!</div>
+      <div class="confirm-copy">
+        <h2 id="resetPlaytimeTitle">Reset instance playtime?</h2>
+        <p id="resetPlaytimeDescription">This will reset this instance's tracked playtime. This cannot be undone.</p>
+      </div>
+      <p id="resetPlaytimeError" class="confirm-error" hidden></p>
+      <div class="confirm-actions">
+        <button id="resetPlaytimeCancel" class="confirm-cancel" type="button">No, keep it</button>
+        <button id="resetPlaytimeConfirm" class="delete-instance-confirm" type="button">Yes, reset playtime</button>
+      </div>
+    </section>
+  </div>
   <div id="removeProfileDialog" class="confirm-overlay" hidden>
     <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="removeProfileTitle" aria-describedby="removeProfileDescription">
       <div class="confirm-icon">!</div>
@@ -163,6 +226,43 @@
       </div>
     </section>
   </div>
+  <div id="deleteInstanceDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog delete-instance-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteInstanceTitle" aria-describedby="deleteInstanceDescription">
+      <div class="confirm-icon">!</div>
+      <div class="confirm-copy">
+        <h2 id="deleteInstanceTitle">Delete instance files?</h2>
+        <p id="deleteInstanceDescription">This will remove the worlds, resource packs, mods, settings, and other downloaded files for <b id="deleteInstanceName"></b>. You can install this instance again later. Eclipse will keep its instance profile file.</p>
+      </div>
+      <p id="deleteInstanceError" class="confirm-error" hidden></p>
+      <div class="confirm-actions">
+        <button id="deleteInstanceCancel" class="confirm-cancel" type="button">No, keep it</button>
+        <button id="deleteInstanceConfirm" class="delete-instance-confirm" type="button">Yes, I want to delete</button>
+      </div>
+    </section>
+  </div>
+  <div id="deleteInstanceFinalDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog delete-instance-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteInstanceFinalTitle" aria-describedby="deleteInstanceFinalDescription">
+      <div class="confirm-icon">!</div>
+      <div class="confirm-copy">
+        <h2 id="deleteInstanceFinalTitle">Are you 100% sure?</h2>
+        <p id="deleteInstanceFinalDescription">This will permanently remove every file in the instance except eclipse-instance.json. Your worlds and downloaded content cannot be recovered from this device. You can install the instance again later.</p>
+      </div>
+      <p id="deleteInstanceFinalError" class="confirm-error" hidden></p>
+      <div class="confirm-actions">
+        <button id="deleteInstanceFinalCancel" class="confirm-cancel" type="button">No, keep it</button>
+        <button id="deleteInstanceFinalConfirm" class="delete-instance-confirm" type="button">Yes, delete everything</button>
+      </div>
+    </section>
+  </div>
+  <div id="removeModDialog" class="confirm-overlay" hidden>
+    <section class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="removeModTitle" aria-describedby="removeModDescription">
+      <div class="confirm-icon">!</div>
+      <div class="confirm-copy"><h2 id="removeModTitle">Remove this mod?</h2><p id="removeModDescription">This removes <b id="removeModName"></b> from the selected instance. Its JAR file will be deleted.</p></div>
+      <p id="removeModError" class="confirm-error" hidden></p>
+      <div class="confirm-actions"><button id="removeModCancel" class="confirm-cancel" type="button">Keep mod</button><button id="removeModConfirm" class="confirm-remove" type="button">Remove mod</button></div>
+    </section>
+  </div>
+  <script src="../assets/vendor/skinview3d.bundle.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>
